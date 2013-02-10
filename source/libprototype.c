@@ -4,7 +4,8 @@
 void start();
 void end();
 
-method* new_method(fpointer function);
+method_o* new_method_o(ofpointer function);
+method_v* new_method_v(vfpointer function);
 method_d* new_method_d(dfpointer function);
 method_f* new_method_f(ffpointer function);
 
@@ -26,29 +27,44 @@ obj* clone(obj* subject) {
 	return clone;
 }
 
-void bind(obj* o, char* key, fpointer function) {
-	method* m = new_method(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+void bind_o(obj* o, char* key, ofpointer function) {
+	method_o* m = new_method_o(function);
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method_o*));
+	free(m);
+}
+
+void bind_v(obj* o, char* key, vfpointer function) {
+	method_v* m = new_method_v(function);
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method_v*));
 	free(m);
 }
 
 void bind_d(obj* o, char* key, dfpointer function) {
 	method_d* m = new_method_d(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method_d*));
 	free(m);
 }
 
 void bind_f(obj* o, char* key, ffpointer function) {
 	method_f* m = new_method_f(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method_f*));
 	free(m);
 }
 
-void* call(obj* o, char* key, ...) {
+obj* call_o(obj* o, char* key, ...) {
 	va_list argp;
 	va_start(argp, key);
 
-	method* m = ht_get(o->table, key, strlen(key));
+	method_o* m = ht_get(o->table, key, strlen(key));
+
+	return m->function(o, &argp);
+}
+
+void* call_v(obj* o, char* key, ...) {
+	va_list argp;
+	va_start(argp, key);
+
+	method_v* m = ht_get(o->table, key, strlen(key));
 
 	return m->function(o, &argp);
 }
@@ -69,6 +85,22 @@ double call_f(obj* o, char* key, ...) {
 	method_f* m = ht_get(o->table, key, strlen(key));
 
 	return m->function(o, &argp);
+}
+
+void set_o(obj* o, char* key, obj* value) {
+	ht_insert(&o->table, key, strlen(key) + 1, value, sizeof(struct _obj));
+}
+
+obj* get_o(obj* o, char* key) {
+	return ht_get(o->table, key, strlen(key) + 1);
+}
+
+void set_v(obj* o, char* key, void* value, size_t value_size) {
+	ht_insert(&o->table, key, strlen(key) + 1, value, value_size);
+}
+
+void* get_v(obj* o, char* key) {
+	return ht_get(o->table, key, strlen(key) + 1);
 }
 
 void set_s(obj* o, char* key, char* value) {
@@ -103,8 +135,17 @@ double get_f(obj* o, char* key) {
 	return *valuep;
 }
 
-method* new_method(fpointer function) {
-	method* m = malloc(sizeof(struct _method));
+method_o* new_method_o(ofpointer function) {
+	method_o* m = malloc(sizeof(struct _method_o));
+	assert(m);
+
+	m->function = function;
+
+	return m;
+}
+
+method_v* new_method_v(vfpointer function) {
+	method_v* m = malloc(sizeof(struct _method_o));
 	assert(m);
 
 	m->function = function;
