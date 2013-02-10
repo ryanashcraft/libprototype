@@ -1,0 +1,9 @@
+
+#ifndef LPSTRING_H_
+#define LPSTRING_H_
+
+#include "libprototype.h"
+
+obj* string(char* value);
+
+#endif

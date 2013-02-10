@@ -95,6 +95,9 @@ run: $(TARGET)
 valgrind: $(TARGET)
 		valgrind ./$(TARGET)
 
+gdb: $(TARGET)
+		gdb ./$(TARGET)
+
 # Includes the .d files so it knows the exact dependencies for every
 # source.
 -include $(DFILES)$(target) $(bins) 

@@ -5,6 +5,8 @@ void start();
 void end();
 
 method* new_method(fpointer function);
+method_d* new_method_d(dfpointer function);
+method_f* new_method_f(ffpointer function);
 
 obj* new() {
 	obj* o = malloc(sizeof(struct _obj));
@@ -26,7 +28,17 @@ obj* clone(obj* subject) {
 
 void bind(obj* o, char* key, fpointer function) {
 	method* m = new_method(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(void*));
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+}
+
+void bind_d(obj* o, char* key, dfpointer function) {
+	method_d* m = new_method_d(function);
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+}
+
+void bind_f(obj* o, char* key, ffpointer function) {
+	method_f* m = new_method_f(function);
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
 }
 
 void* call(obj* o, char* key, ...) {
@@ -34,7 +46,23 @@ void* call(obj* o, char* key, ...) {
 	va_start(argp, key);
 
 	method* m = ht_get(o->table, key, strlen(key));
-	return m->function(&argp);
+	return m->function(o, &argp);
+}
+
+long call_d(obj* o, char* key, ...) {
+	va_list argp;
+	va_start(argp, key);
+
+	method_d* m = ht_get(o->table, key, strlen(key));
+	return m->function(o, &argp);
+}
+
+double call_f(obj* o, char* key, ...) {
+	va_list argp;
+	va_start(argp, key);
+
+	method_f* m = ht_get(o->table, key, strlen(key));
+	return m->function(o, &argp);
 }
 
 void set_s(obj* o, char* key, char* value) {
@@ -42,7 +70,7 @@ void set_s(obj* o, char* key, char* value) {
 }
 
 char* get_s(obj* o, char* key) {
-	return ht_get(o->table, key, strlen(key));
+	return ht_get(o->table, key, strlen(key) + 1);
 }
 
 void set_d(obj* o, char* key, long value) {
@@ -71,6 +99,24 @@ double get_f(obj* o, char* key) {
 
 method* new_method(fpointer function) {
 	method* m = malloc(sizeof(struct _method));
+	assert(m);
+
+	m->function = function;
+
+	return m;
+}
+
+method_d* new_method_d(dfpointer function) {
+	method_d* m = malloc(sizeof(struct _method_d));
+	assert(m);
+
+	m->function = function;
+
+	return m;
+}
+
+method_f* new_method_f(ffpointer function) {
+	method_f* m = malloc(sizeof(struct _method_f));
 	assert(m);
 
 	m->function = function;
