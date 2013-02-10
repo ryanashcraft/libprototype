@@ -60,7 +60,7 @@ long get_d(obj* o, char* key) {
 void set_f(obj* o, char* key, double value) {
 	double* valuep = malloc(sizeof(double));
 	*valuep = value;
-	ht_insert(&o->table, key, strlen(key), valuep, sizeof(long));
+	ht_insert(&o->table, key, strlen(key), valuep, sizeof(double));
 	free(valuep);
 }
 
