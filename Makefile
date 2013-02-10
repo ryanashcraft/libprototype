@@ -4,11 +4,11 @@
 C++ = clang
 
 # Specify the main target
-TARGET = rtc
+TARGET = example.o
 # Default build type (release or debug)
 TYPE = debug
 # Which directories contain source files
-DIRS = source
+DIRS = source example
 # Which directories contain header files
 INCS = include 
 # Which libraries are linked
@@ -91,6 +91,9 @@ dirs:
 
 run: $(TARGET)
 		./$(TARGET)
+
+valgrind: $(TARGET)
+		valgrind ./$(TARGET)
 
 # Includes the .d files so it knows the exact dependencies for every
 # source.
