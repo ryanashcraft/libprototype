@@ -9,6 +9,8 @@ obj* vector(long size) {
 
 	obj** value = calloc(size, sizeof(obj*));
 	set_v(self, "value", value, size * sizeof(obj*));
+	free(value);
+
 	bind_o(self, "set_at", set_at);
 	bind_o(self, "at", at);
 
