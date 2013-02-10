@@ -1,7 +1,7 @@
 # Makefile based off of example from http://content.gpwiki.org/index.php/Makefile
 
 # The compiler
-C++ = clang
+C++ = gcc
 
 # Specify the main target
 TARGET = example.o
@@ -93,7 +93,7 @@ run: $(TARGET)
 		./$(TARGET)
 
 valgrind: $(TARGET)
-		valgrind ./$(TARGET)
+		valgrind --leak-check=full ./$(TARGET)
 
 gdb: $(TARGET)
 		gdb ./$(TARGET)
