@@ -34,7 +34,7 @@ typedef struct _method_f {
 	ffpointer function;
 } method_f;
 
-obj* new();
+obj* object();
 
 obj* clone(obj* subject);
 

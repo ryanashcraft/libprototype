@@ -8,7 +8,7 @@ method* new_method(fpointer function);
 method_d* new_method_d(dfpointer function);
 method_f* new_method_f(ffpointer function);
 
-obj* new() {
+obj* object() {
 	obj* o = malloc(sizeof(struct _obj));
 	assert(o);
 
@@ -49,6 +49,7 @@ void* call(obj* o, char* key, ...) {
 	va_start(argp, key);
 
 	method* m = ht_get(o->table, key, strlen(key));
+
 	return m->function(o, &argp);
 }
 
@@ -57,6 +58,7 @@ long call_d(obj* o, char* key, ...) {
 	va_start(argp, key);
 
 	method_d* m = ht_get(o->table, key, strlen(key));
+
 	return m->function(o, &argp);
 }
 
@@ -65,6 +67,7 @@ double call_f(obj* o, char* key, ...) {
 	va_start(argp, key);
 
 	method_f* m = ht_get(o->table, key, strlen(key));
+
 	return m->function(o, &argp);
 }
 
