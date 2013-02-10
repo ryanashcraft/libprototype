@@ -29,16 +29,19 @@ obj* clone(obj* subject) {
 void bind(obj* o, char* key, fpointer function) {
 	method* m = new_method(function);
 	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+	free(m);
 }
 
 void bind_d(obj* o, char* key, dfpointer function) {
 	method_d* m = new_method_d(function);
 	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+	free(m);
 }
 
 void bind_f(obj* o, char* key, ffpointer function) {
 	method_f* m = new_method_f(function);
 	ht_insert(&o->table, key, strlen(key), m, sizeof(method*));
+	free(m);
 }
 
 void* call(obj* o, char* key, ...) {
