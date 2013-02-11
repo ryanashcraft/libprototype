@@ -186,7 +186,13 @@ void set_o(obj* o, char* key, obj* value) {
 }
 
 obj* get_o(obj* o, char* key) {
-	return ht_get(o->table, key, strlen(key) + 1);
+	obj* valuep = ht_get(o->table, key, strlen(key) + 1);
+
+	if (valuep == NULL) {
+		error_attempted_to_get_undefined_member(key);
+	}
+
+	return valuep;
 }
 
 void set_p(obj* o, char* key, void* value, size_t value_size) {
@@ -202,7 +208,13 @@ void set_p(obj* o, char* key, void* value, size_t value_size) {
 }
 
 void* get_p(obj* o, char* key) {
-	return ht_get(o->table, key, strlen(key) + 1);
+	void* valuep = ht_get(o->table, key, strlen(key) + 1);
+
+	if (valuep == NULL) {
+		error_attempted_to_get_undefined_member(key);
+	}
+
+	return valuep;
 }
 
 void set_s(obj* o, char* key, char* value) {
@@ -218,7 +230,13 @@ void set_s(obj* o, char* key, char* value) {
 }
 
 char* get_s(obj* o, char* key) {
-	return ht_get(o->table, key, strlen(key) + 1);
+	char* valuep = ht_get(o->table, key, strlen(key) + 1);
+	
+	if (valuep == NULL) {
+		error_attempted_to_get_undefined_member(key);
+	}
+
+	return valuep;
 }
 
 void set_d(obj* o, char* key, long value) {
