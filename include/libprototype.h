@@ -27,6 +27,7 @@ typedef char (*fpointer_c) (struct _obj*, va_list*);
 typedef struct _obj {
 	hashtable* table;
 	unsigned int retain_count;
+	fpointer dealloc;
 } obj;
 
 typedef struct _method {

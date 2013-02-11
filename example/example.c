@@ -29,4 +29,5 @@ void end() {
 	printf("%c\n", call_c(s, "charat", 5));
 
 	release(o);
+	release(v);
 }

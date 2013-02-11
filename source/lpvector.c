@@ -3,14 +3,17 @@
 
 #define LPVECTOR_INITIAL_SIZE 10
 
-void append(obj* o, va_list* args);
-void set_at(obj* o, va_list* args);
-obj* at(obj* o, va_list* args);
+void dealloc(obj* self, va_list* args);
+void append(obj* self, va_list* args);
+void set_at(obj* self, va_list* args);
+obj* at(obj* self, va_list* args);
 
 obj* vector() {
 	obj* self = object();
+	self->dealloc = dealloc;
 
 	obj** value = calloc(LPVECTOR_INITIAL_SIZE, sizeof(obj*));
+
 	set_p(self, "value", &value, sizeof(obj**));
 	set_d(self, "count", 0);
 
@@ -21,11 +24,23 @@ obj* vector() {
 	return self;
 }
 
+void dealloc(obj* self, va_list* args) {
+	obj** vector_value = *((obj***)get_p(self, "value"));
+
+	for (int i = 0; i < get_d(self, "count"); i++) {
+		release(vector_value[i]);
+	}
+
+	free(vector_value);
+}
+
 void append(obj* self, va_list* args) {
 	obj* o = va_arg(*args, obj*);
 	obj** vector_value = *((obj***)get_p(self, "value"));
 	long count = get_d(self, "count");
 	vector_value[count] = o;
+
+	retain(o);
 
 	set_d(self, "count", count + 1);
 }

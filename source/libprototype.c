@@ -23,6 +23,7 @@ obj* object() {
 
 	o->table = ht_create(4, 2);
 	o->retain_count = 1;
+	o->dealloc = NULL;
 
 	return o;
 }
@@ -49,6 +50,9 @@ void retain(obj* o) {
 }
 
 void delete(obj* o) {
+	if (o->dealloc != NULL)
+		o->dealloc(o, NULL);
+	
 	ht_destroy(o->table);
 	free(o);
 }
