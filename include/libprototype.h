@@ -15,29 +15,34 @@
 
 struct _obj;
 
-typedef void* (*vfpointer) (struct _obj*, va_list*);
-typedef struct _obj* (*ofpointer) (struct _obj*, va_list*);
-typedef long (*dfpointer) (struct _obj*, va_list*);
-typedef double (*ffpointer) (struct _obj*, va_list*);
+typedef void (*fpointer) (struct _obj*, va_list*);
+typedef void* (*fpointer_p) (struct _obj*, va_list*);
+typedef struct _obj* (*fpointer_o) (struct _obj*, va_list*);
+typedef long (*fpointer_d) (struct _obj*, va_list*);
+typedef double (*fpointer_f) (struct _obj*, va_list*);
 
 typedef struct _obj {
 	hashtable* table;
 } obj;
 
+typedef struct _method {
+	fpointer function;
+} method;
+
 typedef struct _method_o {
-	ofpointer function;
+	fpointer_o function;
 } method_o;
 
-typedef struct _method_v {
-	vfpointer function;
-} method_v;
+typedef struct _method_p {
+	fpointer_p function;
+} method_p;
 
 typedef struct _method_d {
-	dfpointer function;
+	fpointer_d function;
 } method_d;
 
 typedef struct _method_f {
-	ffpointer function;
+	fpointer_f function;
 } method_f;
 
 obj* object();
@@ -47,8 +52,8 @@ obj* clone(obj* subject);
 void set_o(obj* o, char* key, obj* value);
 obj* get_o(obj* o, char* key);
 
-void set_v(obj* o, char* key, void* value, size_t value_size);
-void* get_v(obj* o, char* key);
+void set_p(obj* o, char* key, void* value, size_t value_size);
+void* get_p(obj* o, char* key);
 
 void set_s(obj* o, char* key, char* value);
 char* get_s(obj* o, char* key);
@@ -59,14 +64,19 @@ long get_d(obj* o, char* key);
 void set_f(obj* o, char* key, double value);
 double get_f(obj* o, char* key);
 
-void bind_o(obj* o, char* key, ofpointer function);
-void bind_v(obj* o, char* key, vfpointer function);
-void bind_d(obj* o, char* key, dfpointer function);
-void bind_f(obj* o, char* key, ffpointer function);
+void bind(obj* o, char* key, fpointer function);
+void call(obj* o, char* key, ...);
 
+void bind_o(obj* o, char* key, fpointer_o function);
 obj* call_o(obj* o, char* key, ...);
-void* call_v(obj* o, char* key, ...);
+
+void bind_p(obj* o, char* key, fpointer_p function);
+void* call_p(obj* o, char* key, ...);
+
+void bind_d(obj* o, char* key, fpointer_d function);
 long call_d(obj* o, char* key, ...);
+
+void bind_f(obj* o, char* key, fpointer_f function);
 double call_f(obj* o, char* key, ...);
 
 #endif

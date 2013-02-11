@@ -13,7 +13,7 @@ void start() {
 	s = string("oh hai der!");
 
 	v = vector(10);
-	call_o(v, "set_at", 1, o);
+	call(v, "set_at", 1, o);
 }
 
 void end() {
