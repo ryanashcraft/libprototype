@@ -57,7 +57,7 @@ obj* delete(obj* o) {
 	
 	ht_destroy(o->table);
 	free(o);
-	
+
 	return NULL;
 }
 
@@ -326,6 +326,11 @@ char get_c(obj* o, char* key) {
 	}
 	
 	return *valuep;
+}
+
+void unset(obj* o, char* key) {
+	void* removed = ht_remove(o->table, key, strlen(key));
+	free(removed);
 }
 
 method* new_method(fpointer function) {

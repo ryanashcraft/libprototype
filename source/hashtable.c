@@ -81,6 +81,7 @@ void *ht_remove(hashtable *table, void *key, size_t key_size) {
 
 	void *value = table->entries[index]->value;
 
+	free(table->entries[index]->key);
 	free(table->entries[index]);
 	table->entries[index] = NULL;
 

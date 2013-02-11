@@ -7,6 +7,7 @@ void dealloc(obj* self, va_list* args);
 void append(obj* self, va_list* args);
 void set_at(obj* self, va_list* args);
 obj* at(obj* self, va_list* args);
+obj* remove_at(obj* self, va_list* args);
 
 obj* vector() {
 	obj* self = object();
@@ -21,6 +22,7 @@ obj* vector() {
 	bind(self, "append", append);
 	bind(self, "set_at", set_at);
 	bind_o(self, "at", at);
+	bind_o(self, "remove_at", remove_at);
 
 	return self;
 }
@@ -29,7 +31,9 @@ void dealloc(obj* self, va_list* args) {
 	obj** vector_value = *((obj***)get_p(self, "value"));
 
 	for (int i = 0; i < get_d(self, "count"); i++) {
-		release(vector_value[i]);
+		if (vector_value[i] != NULL) {
+			release(vector_value[i]);
+		}
 	}
 
 	free(vector_value);
@@ -91,5 +95,27 @@ obj* at(obj* self, va_list* args) {
 
 	obj** vector_value = *((obj***)get_p(self, "value"));
 	obj* o = vector_value[i];
+	return o;
+}
+
+obj* remove_at(obj* self, va_list *args) {
+	long i = va_arg(*args, long);
+
+	if (i < 0) {
+		LOG_CRITICAL("Attempt to access index %ld of vector with count %ld", i, get_d(self, "count"));
+		abort();
+	} else if (i >= get_d(self, "count")) {
+		LOG_CRITICAL("Attempt to access index %ld of vector with count %ld", i, get_d(self, "count"));
+		abort();
+	}
+
+	obj** vector_value = *((obj***)get_p(self, "value"));
+	obj* o = vector_value[i];
+	vector_value[i] = NULL;
+
+	o = release(o);
+
+	set_d(self, "count", get_d(self, "count") - 1);
+
 	return o;
 }

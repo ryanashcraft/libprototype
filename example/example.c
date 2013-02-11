@@ -15,12 +15,13 @@ void start() {
 
 	v = vector(10);
 	call(v, "append", o);
+	call(v, "append", s);
 
 	printf("%ld\n", get_d(v, "capacity"));
 }
 
 void end() {
-	obj* o = call_o(v, "at", 0);
+	obj* o = call_o(v, "remove_at", 0);
 	
 	printf("%s %ld %f %c\n", get_s(o, "s"), get_d(o, "d"), get_f(o, "f"), get_c(o, "c"));
 

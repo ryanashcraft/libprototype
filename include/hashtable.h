@@ -19,6 +19,7 @@ void ht_destroy(hashtable *table);
 
 void ht_insert(hashtable **table, void *key, size_t key_size, void *value, size_t value_size);
 
+/* Returned value is allocated on the heap and must be freed */
 void *ht_remove(hashtable *table, void *key, size_t key_size);
 
 void *ht_get(hashtable *table, void *key, size_t key_size);

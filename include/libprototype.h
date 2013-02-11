@@ -78,6 +78,8 @@ double get_f(obj* o, char* key);
 void set_c(obj* o, char* key, char value);
 char get_c(obj* o, char* key);
 
+void unset(obj* o, char* key);
+
 void bind(obj* o, char* key, fpointer function);
 void call(obj* o, char* key, ...);
 
