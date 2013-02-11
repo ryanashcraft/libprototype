@@ -11,7 +11,9 @@ void start() {
 	set_f(o, "f", 3.14);
 	set_c(o, "c", 'A');
 
-	s = string("oh hai der!");
+	s = formatted_string("oh hai der #%d %s!", 1, "penguin");
+
+	printf("%ld\n", get_d(s, "length"));
 
 	v = vector(10);
 	call(v, "append", o);

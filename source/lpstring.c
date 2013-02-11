@@ -12,6 +12,24 @@ obj* string(char* value) {
 	return self;
 }
 
+obj* formatted_string(char* format, ...) {
+	va_list args;
+	va_start(args, format);
+
+	int size_needed = vsnprintf(NULL, 0, format, args);
+	char* value = calloc(size_needed + 1, sizeof(char));
+	vsnprintf(value, size_needed, format, args);
+
+	obj* self = object();
+	set_s(self, "value", value);
+	free(value);
+
+	set_d(self, "length", size_needed - 1);
+	bind_c(self, "charat", charat);
+
+	return self;
+}
+
 char charat(obj* self, va_list* args) {
 	long i = va_arg(*args, long);
 
