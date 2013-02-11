@@ -3,11 +3,11 @@
 
 #define LPVECTOR_INITIAL_SIZE 10
 
-void dealloc(obj* self, va_list* args);
-void append(obj* self, va_list* args);
-void set_at(obj* self, va_list* args);
-obj* at(obj* self, va_list* args);
-obj* remove_at(obj* self, va_list* args);
+static void dealloc(obj* self, va_list* args);
+static void append(obj* self, va_list* args);
+static void set_at(obj* self, va_list* args);
+static obj* at(obj* self, va_list* args);
+static obj* remove_at(obj* self, va_list* args);
 
 obj* vector() {
 	obj* self = object();

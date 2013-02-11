@@ -37,7 +37,7 @@ obj* formatted_string(char* format, ...) {
 	return self;
 }
 
-static void append(obj* self, va_list* args) {
+void append(obj* self, va_list* args) {
 	char* part_two = va_arg(*args, char*);
 	char* part_one = get_s(self, "value");
 	char* joined;
@@ -62,7 +62,7 @@ static void append(obj* self, va_list* args) {
 	free(joined);
 }
 
-char charat(obj* self, va_list* args) {
+static char charat(obj* self, va_list* args) {
 	long i = va_arg(*args, long);
 
 	if (i < 0) {

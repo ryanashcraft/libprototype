@@ -4,18 +4,18 @@
 void start();
 void end();
 
-method* new_method(fpointer function);
-method_o* new_method_o(fpointer_o function);
-method_p* new_method_p(fpointer_p function);
-method_d* new_method_d(fpointer_d function);
-method_f* new_method_f(fpointer_f function);
-method_c* new_method_c(fpointer_c function);
+static method* new_method(fpointer function);
+static method_o* new_method_o(fpointer_o function);
+static method_p* new_method_p(fpointer_p function);
+static method_d* new_method_d(fpointer_d function);
+static method_f* new_method_f(fpointer_f function);
+static method_c* new_method_c(fpointer_c function);
 
-void error_called_method_on_null(char* key);
-void error_attempted_to_set_member_of_null(char* key);
-void error_attempted_to_set_member_to_null(char* key);
-void error_object_does_not_respond_to_method(char* key);
-void error_attempted_to_get_undefined_member(char* key);
+static void error_called_method_on_null(char* key);
+static void error_attempted_to_set_member_of_null(char* key);
+static void error_attempted_to_set_member_to_null(char* key);
+static void error_object_does_not_respond_to_method(char* key);
+static void error_attempted_to_get_undefined_member(char* key);
 
 obj* object() {
 	obj* o = malloc(sizeof(struct _obj));
