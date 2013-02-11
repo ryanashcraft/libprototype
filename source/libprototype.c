@@ -1,6 +1,8 @@
 
 #include "libprototype.h"
 
+#define LOG_CRIT(FORMAT, ...) fprintf(stderr, "%s:%d - " FORMAT "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+
 void start();
 void end();
 
@@ -9,6 +11,11 @@ method_o* new_method_o(fpointer_o function);
 method_p* new_method_p(fpointer_p function);
 method_d* new_method_d(fpointer_d function);
 method_f* new_method_f(fpointer_f function);
+
+void error_called_method_on_null(char* key);
+void error_attempted_to_set_member_of_null(char* key);
+void error_attempted_to_set_member_to_null(char* key);
+void error_object_does_not_respond_to_method(char* key);
 
 obj* object() {
 	obj* o = malloc(sizeof(struct _obj));
@@ -63,15 +70,13 @@ void call(obj* o, char* key, ...) {
 	va_start(argp, key);
 
 	if (o == NULL) {
-		fprintf(stderr, "Attempt to call %s on NULL", key);
-		abort();
+		error_called_method_on_null(key);
 	}
 
 	method* m = ht_get(o->table, key, strlen(key));
 
 	if (m == NULL || m->function == NULL) {
-		fprintf(stderr, "Object does not respond to call %s", key);
-		abort();
+		error_object_does_not_respond_to_method(key);
 	}
 
 	m->function(o, &argp);
@@ -82,15 +87,13 @@ obj* call_o(obj* o, char* key, ...) {
 	va_start(argp, key);
 
 	if (o == NULL) {
-		fprintf(stderr, "Attempt to call %s on NULL", key);
-		abort();
+		error_called_method_on_null(key);
 	}
 
 	method_o* m = ht_get(o->table, key, strlen(key));
 
 	if (m == NULL || m->function == NULL) {
-		fprintf(stderr, "Object does not respond to call %s", key);
-		abort();
+		error_object_does_not_respond_to_method(key);
 	}
 
 	return m->function(o, &argp);
@@ -100,7 +103,15 @@ void* call_p(obj* o, char* key, ...) {
 	va_list argp;
 	va_start(argp, key);
 
+	if (o == NULL) {
+		error_called_method_on_null(key);
+	}
+
 	method_p* m = ht_get(o->table, key, strlen(key));
+
+	if (m == NULL || m->function == NULL) {
+		error_object_does_not_respond_to_method(key);
+	}
 
 	return m->function(o, &argp);
 }
@@ -109,7 +120,15 @@ long call_d(obj* o, char* key, ...) {
 	va_list argp;
 	va_start(argp, key);
 
+	if (o == NULL) {
+		error_called_method_on_null(key);
+	}
+
 	method_d* m = ht_get(o->table, key, strlen(key));
+
+	if (m == NULL || m->function == NULL) {
+		error_object_does_not_respond_to_method(key);
+	}
 
 	return m->function(o, &argp);
 }
@@ -118,12 +137,28 @@ double call_f(obj* o, char* key, ...) {
 	va_list argp;
 	va_start(argp, key);
 
+	if (o == NULL) {
+		error_called_method_on_null(key);
+	}
+
 	method_f* m = ht_get(o->table, key, strlen(key));
+	
+	if (m == NULL || m->function == NULL) {
+		error_object_does_not_respond_to_method(key);
+	}
 
 	return m->function(o, &argp);
 }
 
 void set_o(obj* o, char* key, obj* value) {
+	if (o == NULL) {
+		error_attempted_to_set_member_of_null(key);
+	}
+
+	if (value == NULL) {
+		error_attempted_to_set_member_to_null(key);
+	}
+
 	ht_insert(&o->table, key, strlen(key) + 1, value, sizeof(struct _obj));
 }
 
@@ -132,6 +167,14 @@ obj* get_o(obj* o, char* key) {
 }
 
 void set_p(obj* o, char* key, void* value, size_t value_size) {
+	if (o == NULL) {
+		error_attempted_to_set_member_of_null(key);
+	}
+
+	if (value == NULL) {
+		error_attempted_to_set_member_to_null(key);
+	}
+
 	ht_insert(&o->table, key, strlen(key) + 1, value, value_size);
 }
 
@@ -140,6 +183,14 @@ void* get_p(obj* o, char* key) {
 }
 
 void set_s(obj* o, char* key, char* value) {
+	if (o == NULL) {
+		error_attempted_to_set_member_of_null(key);
+	}
+
+	if (value == NULL) {
+		error_attempted_to_set_member_to_null(key);
+	}
+
 	ht_insert(&o->table, key, strlen(key) + 1, value, strlen(value) + 1);
 }
 
@@ -148,6 +199,10 @@ char* get_s(obj* o, char* key) {
 }
 
 void set_d(obj* o, char* key, long value) {
+	if (o == NULL) {
+		error_attempted_to_set_member_of_null(key);
+	}
+
 	long* valuep = malloc(sizeof(long));
 	*valuep = value;
 	ht_insert(&o->table, key, strlen(key), valuep, sizeof(long));
@@ -160,6 +215,10 @@ long get_d(obj* o, char* key) {
 }
 
 void set_f(obj* o, char* key, double value) {
+	if (o == NULL) {
+		error_attempted_to_set_member_of_null(key);
+	}
+
 	double* valuep = malloc(sizeof(double));
 	*valuep = value;
 	ht_insert(&o->table, key, strlen(key), valuep, sizeof(double));
@@ -219,4 +278,24 @@ method_f* new_method_f(fpointer_f function) {
 int main() {
 	start();
 	atexit(end);
+}
+
+void error_called_method_on_null(char* key) {
+	LOG_CRIT("Attempt to call \"%s\" on NULL", key);
+	abort();
+}
+
+void error_attempted_to_set_member_of_null(char* key) {
+	LOG_CRIT("Attempt to set member \"%s\" of NULL", key);
+	abort();
+}
+
+void error_attempted_to_set_member_to_null(char* key) {
+	LOG_CRIT("Attempt to set member \"%s\" to NULL", key);
+	abort();
+}
+
+void error_object_does_not_respond_to_method(char* key) {
+	LOG_CRIT("Object does not respond to call \"%s\"", key);
+	abort();
 }
