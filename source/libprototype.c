@@ -37,24 +37,28 @@ obj* clone(obj* subject) {
 	return clone;
 }
 
-void release(obj* o) {
-	--o->retain_count;
-
-	if (o->retain_count <= 0) {
-		delete(o);
-	}
-}
-
 void retain(obj* o) {
 	o->retain_count++;
 }
 
-void delete(obj* o) {
+obj* release(obj* o) {
+	--o->retain_count;
+
+	if (o->retain_count <= 0) {
+		return delete(o);
+	}
+
+	return o;
+}
+
+obj* delete(obj* o) {
 	if (o->dealloc != NULL)
 		o->dealloc(o, NULL);
 	
 	ht_destroy(o->table);
 	free(o);
+	
+	return NULL;
 }
 
 void bind(obj* o, char* key, fpointer function) {

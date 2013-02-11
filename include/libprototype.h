@@ -57,8 +57,8 @@ typedef struct _method_c {
 obj* object();
 obj* clone(obj* subject);
 void retain(obj*);
-void release(obj*);
-void delete(obj*);
+obj* release(obj*);
+obj* delete(obj*);
 
 void set_o(obj* o, char* key, obj* value);
 obj* get_o(obj* o, char* key);
