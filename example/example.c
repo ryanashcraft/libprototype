@@ -12,6 +12,7 @@ void start() {
 	set_c(o, "c", 'A');
 
 	s = formatted_string("oh hai der #%d %s!", 1, "penguin");
+	call(s, "append", " FOO FIGHTERS");
 
 	printf("%ld\n", get_d(s, "length"));
 
