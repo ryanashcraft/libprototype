@@ -32,6 +32,15 @@ hashtable *ht_create(size_t max_size, size_t resize_ratio) {
 }
 
 void ht_destroy(hashtable *table) {
+	for (int i = 0; i < table->max_size; i++) {
+		struct _htable_entry *entry = table->entries[i];
+		if (entry != NULL) {
+			free(entry->key);
+			free(entry->value);
+			free(entry);
+		}
+	}
+
 	free(table->entries);
 	free(table);
 }
@@ -44,8 +53,8 @@ void ht_insert(hashtable **table, void *key, size_t key_size, void *value, size_
 
 	// Free old entry if we are replacing
 	if ((*table)->entries[hash] != NULL && memcmp((*table)->entries[hash]->key, key, key_size) == 0) {
-		free((*table)->entries[hash]->value);
 		free((*table)->entries[hash]->key);
+		free((*table)->entries[hash]->value);
 		free((*table)->entries[hash]);
 	}
 
@@ -166,6 +175,7 @@ hashtable *ht_resize_if_needed(hashtable *table) {
 		return table;
 	}
 
-	ht_destroy(table);
+	free(table->entries);
+	free(table);
 	return new_hashtable;
 }
