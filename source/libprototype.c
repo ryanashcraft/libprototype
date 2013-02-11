@@ -15,7 +15,7 @@ void error_called_method_on_null(char* key);
 void error_attempted_to_set_member_of_null(char* key);
 void error_attempted_to_set_member_to_null(char* key);
 void error_object_does_not_respond_to_method(char* key);
-void error_member_not_found(char* key);
+void error_attempted_to_get_undefined_member(char* key);
 
 obj* object() {
 	obj* o = malloc(sizeof(struct _obj));
@@ -236,7 +236,7 @@ long get_d(obj* o, char* key) {
 	long* valuep = ht_get(o->table, key, strlen(key));
 
 	if (valuep == NULL) {
-		error_member_not_found(key);
+		error_attempted_to_get_undefined_member(key);
 	}
 
 	return *valuep;
@@ -255,6 +255,32 @@ void set_f(obj* o, char* key, double value) {
 
 double get_f(obj* o, char* key) {
 	double* valuep = ht_get(o->table, key, strlen(key));
+
+	if (valuep == NULL) {
+		error_attempted_to_get_undefined_member(key);
+	}
+
+	return *valuep;
+}
+
+void set_c(obj* o, char* key, char value) {
+	if (o == NULL) {
+		error_attempted_to_set_member_of_null(key);
+	}
+
+	char* valuep = malloc(sizeof(char));
+	*valuep = value;
+	ht_insert(&o->table, key, strlen(key), valuep, sizeof(char));
+	free(valuep);
+}
+
+char get_c(obj* o, char* key) {
+	char* valuep = ht_get(o->table, key, strlen(key));
+
+	if (valuep == NULL) {
+		error_attempted_to_get_undefined_member(key);
+	}
+	
 	return *valuep;
 }
 
@@ -313,17 +339,17 @@ method_c* new_method_c(fpointer_c function) {
 }
 
 void error_called_method_on_null(char* key) {
-	LOG_CRITICAL("Attempt to call \"%s\" on NULL", key);
+	LOG_CRITICAL("Attempted to call \"%s\" on NULL", key);
 	abort();
 }
 
 void error_attempted_to_set_member_of_null(char* key) {
-	LOG_CRITICAL("Attempt to set member \"%s\" of NULL", key);
+	LOG_CRITICAL("Attempted to set member \"%s\" of NULL", key);
 	abort();
 }
 
 void error_attempted_to_set_member_to_null(char* key) {
-	LOG_CRITICAL("Attempt to set member \"%s\" to NULL", key);
+	LOG_CRITICAL("Attempted to set member \"%s\" to NULL", key);
 	abort();
 }
 
@@ -332,8 +358,8 @@ void error_object_does_not_respond_to_method(char* key) {
 	abort();
 }
 
-void error_member_not_found(char* key) {
-	LOG_CRITICAL("Attempt to get undefined member \"%s\"", key);
+void error_attempted_to_get_undefined_member(char* key) {
+	LOG_CRITICAL("Attempted to get undefined member \"%s\"", key);
 	abort();
 }
 

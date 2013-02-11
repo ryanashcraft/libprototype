@@ -9,6 +9,7 @@ void start() {
 	set_s(o, "s", "foo");
 	set_d(o, "d", 5);
 	set_f(o, "f", 3.14);
+	set_c(o, "c", 'A');
 
 	s = string("oh hai der!");
 
@@ -21,7 +22,7 @@ void start() {
 void end() {
 	obj* o = call_o(v, "at", 0);
 	
-	printf("%s %ld %f\n", get_s(o, "s"), get_d(o, "d"), get_f(o, "f"));
+	printf("%s %ld %f %c\n", get_s(o, "s"), get_d(o, "d"), get_f(o, "f"), get_c(o, "c"));
 
 	printf("%s\n", get_s(s, "value"));
 
