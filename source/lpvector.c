@@ -15,6 +15,7 @@ obj* vector() {
 	obj** value = calloc(LPVECTOR_INITIAL_SIZE, sizeof(obj*));
 
 	set_p(self, "value", &value, sizeof(obj**));
+	set_d(self, "capacity", LPVECTOR_INITIAL_SIZE);
 	set_d(self, "count", 0);
 
 	bind(self, "append", append);
@@ -36,9 +37,23 @@ void dealloc(obj* self, va_list* args) {
 
 void append(obj* self, va_list* args) {
 	obj* o = va_arg(*args, obj*);
-	obj** vector_value = *((obj***)get_p(self, "value"));
+	obj** value = *((obj***)get_p(self, "value"));
 	long count = get_d(self, "count");
-	vector_value[count] = o;
+	long capacity = get_d(self, "capacity");
+
+	if (count == capacity - 1) {
+		long resized_capacity = capacity << 1;
+		value = realloc(value, resized_capacity * sizeof(obj*));
+		assert(value);
+
+		// White out new memory from resizing
+		memset(value + capacity, 0, resized_capacity);
+
+		set_p(self, "value", &value, sizeof(obj**));
+		set_d(self, "capacity", resized_capacity);
+	}
+
+	value[count] = o;
 
 	retain(o);
 

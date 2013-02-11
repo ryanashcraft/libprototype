@@ -16,7 +16,7 @@ void start() {
 	v = vector(10);
 	call(v, "append", o);
 
-	printf("%ld\n", get_d(v, "count"));
+	printf("%ld\n", get_d(v, "capacity"));
 }
 
 void end() {
