@@ -22,6 +22,7 @@ obj* object() {
 	assert(o);
 
 	o->table = ht_create(4, 2);
+	o->retain_count = 1;
 
 	return o;
 }
@@ -33,6 +34,23 @@ obj* clone(obj* subject) {
 	memcpy(clone, subject, sizeof(struct _obj));
 
 	return clone;
+}
+
+void release(obj* o) {
+	--o->retain_count;
+
+	if (o->retain_count <= 0) {
+		delete(o);
+	}
+}
+
+void retain(obj* o) {
+	o->retain_count++;
+}
+
+void delete(obj* o) {
+	ht_destroy(o->table);
+	free(o);
 }
 
 void bind(obj* o, char* key, fpointer function) {

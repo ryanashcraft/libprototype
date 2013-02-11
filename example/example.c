@@ -27,4 +27,6 @@ void end() {
 	printf("%s\n", get_s(s, "value"));
 
 	printf("%c\n", call_c(s, "charat", 5));
+
+	release(o);
 }

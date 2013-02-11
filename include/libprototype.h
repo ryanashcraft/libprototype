@@ -26,6 +26,7 @@ typedef char (*fpointer_c) (struct _obj*, va_list*);
 
 typedef struct _obj {
 	hashtable* table;
+	unsigned int retain_count;
 } obj;
 
 typedef struct _method {
@@ -53,8 +54,10 @@ typedef struct _method_c {
 } method_c;
 
 obj* object();
-
 obj* clone(obj* subject);
+void retain(obj*);
+void release(obj*);
+void delete(obj*);
 
 void set_o(obj* o, char* key, obj* value);
 obj* get_o(obj* o, char* key);
