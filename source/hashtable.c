@@ -44,6 +44,8 @@ void ht_insert(hashtable **table, void *key, size_t key_size, void *value, size_
 
 	// Free old entry if we are replacing
 	if ((*table)->entries[hash] != NULL && memcmp((*table)->entries[hash]->key, key, key_size) == 0) {
+		free((*table)->entries[hash]->value);
+		free((*table)->entries[hash]->key);
 		free((*table)->entries[hash]);
 	}
 

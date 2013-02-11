@@ -13,6 +13,8 @@
 #ifndef LIBPROTOTYPE_H_
 #define LIBPROTOTYPE_H_
 
+#define LOG_CRITICAL(FORMAT, ...) fprintf(stderr, "%s:%d - " FORMAT "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+
 struct _obj;
 
 typedef void (*fpointer) (struct _obj*, va_list*);
@@ -20,6 +22,7 @@ typedef void* (*fpointer_p) (struct _obj*, va_list*);
 typedef struct _obj* (*fpointer_o) (struct _obj*, va_list*);
 typedef long (*fpointer_d) (struct _obj*, va_list*);
 typedef double (*fpointer_f) (struct _obj*, va_list*);
+typedef char (*fpointer_c) (struct _obj*, va_list*);
 
 typedef struct _obj {
 	hashtable* table;
@@ -45,6 +48,10 @@ typedef struct _method_f {
 	fpointer_f function;
 } method_f;
 
+typedef struct _method_c {
+	fpointer_c function;
+} method_c;
+
 obj* object();
 
 obj* clone(obj* subject);
@@ -64,6 +71,9 @@ long get_d(obj* o, char* key);
 void set_f(obj* o, char* key, double value);
 double get_f(obj* o, char* key);
 
+void set_c(obj* o, char* key, char value);
+char get_c(obj* o, char* key);
+
 void bind(obj* o, char* key, fpointer function);
 void call(obj* o, char* key, ...);
 
@@ -78,5 +88,8 @@ long call_d(obj* o, char* key, ...);
 
 void bind_f(obj* o, char* key, fpointer_f function);
 double call_f(obj* o, char* key, ...);
+
+void bind_c(obj* o, char* key, fpointer_c function);
+char call_c(obj* o, char* key, ...);
 
 #endif

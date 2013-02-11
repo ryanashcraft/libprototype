@@ -13,15 +13,17 @@ void start() {
 	s = string("oh hai der!");
 
 	v = vector(10);
-	call(v, "set_at", 1, o);
+	call(v, "append", o);
+
+	printf("%ld\n", get_d(v, "count"));
 }
 
 void end() {
-	obj* o = call_o(v, "at", 1);
+	obj* o = call_o(v, "at", 0);
 	
 	printf("%s %ld %f\n", get_s(o, "s"), get_d(o, "d"), get_f(o, "f"));
 
 	printf("%s\n", get_s(s, "value"));
 
-	printf("%c\n", (char)call_d(s, "charat", 5));
+	printf("%c\n", call_c(s, "charat", 5));
 }

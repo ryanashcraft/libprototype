@@ -1,8 +1,6 @@
 
 #include "libprototype.h"
 
-#define LOG_CRIT(FORMAT, ...) fprintf(stderr, "%s:%d - " FORMAT "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-
 void start();
 void end();
 
@@ -11,11 +9,13 @@ method_o* new_method_o(fpointer_o function);
 method_p* new_method_p(fpointer_p function);
 method_d* new_method_d(fpointer_d function);
 method_f* new_method_f(fpointer_f function);
+method_c* new_method_c(fpointer_c function);
 
 void error_called_method_on_null(char* key);
 void error_attempted_to_set_member_of_null(char* key);
 void error_attempted_to_set_member_to_null(char* key);
 void error_object_does_not_respond_to_method(char* key);
+void error_member_not_found(char* key);
 
 obj* object() {
 	obj* o = malloc(sizeof(struct _obj));
@@ -62,6 +62,12 @@ void bind_d(obj* o, char* key, fpointer_d function) {
 void bind_f(obj* o, char* key, fpointer_f function) {
 	method_f* m = new_method_f(function);
 	ht_insert(&o->table, key, strlen(key), m, sizeof(method_f));
+	free(m);
+}
+
+void bind_c(obj* o, char* key, fpointer_c function) {
+	method_c* m = new_method_c(function);
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method_c));
 	free(m);
 }
 
@@ -150,6 +156,23 @@ double call_f(obj* o, char* key, ...) {
 	return m->function(o, &argp);
 }
 
+char call_c(obj* o, char* key, ...) {
+	va_list argp;
+	va_start(argp, key);
+
+	if (o == NULL) {
+		error_called_method_on_null(key);
+	}
+
+	method_c* m = ht_get(o->table, key, strlen(key));
+	
+	if (m == NULL || m->function == NULL) {
+		error_object_does_not_respond_to_method(key);
+	}
+
+	return m->function(o, &argp);
+}
+
 void set_o(obj* o, char* key, obj* value) {
 	if (o == NULL) {
 		error_attempted_to_set_member_of_null(key);
@@ -211,6 +234,11 @@ void set_d(obj* o, char* key, long value) {
 
 long get_d(obj* o, char* key) {
 	long* valuep = ht_get(o->table, key, strlen(key));
+
+	if (valuep == NULL) {
+		error_member_not_found(key);
+	}
+
 	return *valuep;
 }
 
@@ -275,27 +303,41 @@ method_f* new_method_f(fpointer_f function) {
 	return m;
 }
 
-int main() {
-	start();
-	atexit(end);
+method_c* new_method_c(fpointer_c function) {
+	method_c* m = malloc(sizeof(struct _method_c));
+	assert(m);
+
+	m->function = function;
+
+	return m;
 }
 
 void error_called_method_on_null(char* key) {
-	LOG_CRIT("Attempt to call \"%s\" on NULL", key);
+	LOG_CRITICAL("Attempt to call \"%s\" on NULL", key);
 	abort();
 }
 
 void error_attempted_to_set_member_of_null(char* key) {
-	LOG_CRIT("Attempt to set member \"%s\" of NULL", key);
+	LOG_CRITICAL("Attempt to set member \"%s\" of NULL", key);
 	abort();
 }
 
 void error_attempted_to_set_member_to_null(char* key) {
-	LOG_CRIT("Attempt to set member \"%s\" to NULL", key);
+	LOG_CRITICAL("Attempt to set member \"%s\" to NULL", key);
 	abort();
 }
 
 void error_object_does_not_respond_to_method(char* key) {
-	LOG_CRIT("Object does not respond to call \"%s\"", key);
+	LOG_CRITICAL("Object does not respond to call \"%s\"", key);
 	abort();
+}
+
+void error_member_not_found(char* key) {
+	LOG_CRITICAL("Attempt to get undefined member \"%s\"", key);
+	abort();
+}
+
+int main() {
+	start();
+	atexit(end);
 }
