@@ -25,6 +25,7 @@ void start() {
 
 void end() {
 	obj* o = call_o(v, "remove_at", 0);
+	obj* s = call_o(v, "remove_at", 0);
 	
 	printf("%s %ld %f %c\n", get_s(o, "s"), get_d(o, "d"), get_f(o, "f"), get_c(o, "c"));
 

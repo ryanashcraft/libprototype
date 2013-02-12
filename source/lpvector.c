@@ -1,7 +1,7 @@
 
 #include "lpvector.h"
 
-#define LPVECTOR_INITIAL_SIZE 10
+#define LPVECTOR_INITIAL_SIZE 2
 
 static void dealloc(obj* self, va_list* args);
 static void append(obj* self, va_list* args);
@@ -114,6 +114,16 @@ obj* remove_at(obj* self, va_list *args) {
 	vector_value[i] = NULL;
 
 	o = release(o);
+
+	long count = get_d(self, "count");
+	if (i <= count - 2) {
+		/* We need to shift items down */
+		// memmove(&vector_value[i], &vector_value[i + 1], count - 1 - i);
+		for (int j = i; j < count - 1; j++) {
+			vector_value[j] = vector_value[j + 1];
+		}
+		vector_value[count - 1] = NULL;
+	}
 
 	set_d(self, "count", get_d(self, "count") - 1);
 
