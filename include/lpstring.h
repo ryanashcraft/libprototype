@@ -5,5 +5,6 @@
 #include "libprototype.h"
 
 obj* String(char* value);
+obj* FormattedString(char* value, ...);
 
 #endif
