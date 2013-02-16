@@ -23,6 +23,8 @@ void start() {
 	obj* ll = LinkedList();
 	call(ll, "push back", s);
 	printf("%s\n", get_s(call_o(ll, "back"), "value"));
+
+	release(ll);
 }
 
 void end() {
