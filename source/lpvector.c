@@ -7,15 +7,15 @@ void append(obj* o, va_list* args);
 void set_at(obj* o, va_list* args);
 obj* at(obj* o, va_list* args);
 
-obj* vector() {
-	obj* self = object();
+obj* Vector() {
+	obj* self = Object();
 
 	obj** value = calloc(LPVECTOR_INITIAL_SIZE, sizeof(obj*));
 	set_p(self, "value", &value, sizeof(obj**));
 	set_d(self, "count", 0);
 
 	bind(self, "append", append);
-	bind(self, "set_at", set_at);
+	bind(self, "set at", set_at);
 	bind_o(self, "at", at);
 
 	return self;

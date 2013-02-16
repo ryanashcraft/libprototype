@@ -4,6 +4,6 @@
 
 #include "libprototype.h"
 
-obj* string(char* value);
+obj* String(char* value);
 
 #endif

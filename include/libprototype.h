@@ -9,6 +9,7 @@
 
 #include "lpstring.h"
 #include "lpvector.h"
+#include "lplinkedlist.h"
 
 #ifndef LIBPROTOTYPE_H_
 #define LIBPROTOTYPE_H_
@@ -58,7 +59,7 @@ typedef struct _method_c {
 	fpointer_c function;
 } method_c;
 
-obj* object();
+obj* Object();
 obj* clone(obj* subject);
 void retain(obj*);
 void release(obj*);

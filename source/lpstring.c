@@ -1,18 +1,18 @@
 
 #include "lpstring.h"
 
-char charat(obj* self, va_list* args);
+char char_at(obj* self, va_list* args);
 
-obj* string(char* value) {
-	obj* self = object();
+obj* String(char* value) {
+	obj* self = Object();
 	set_s(self, "value", value);
 	set_d(self, "length", strlen(value));
-	bind_c(self, "charat", charat);
+	bind_c(self, "char at", char_at);
 
 	return self;
 }
 
-char charat(obj* self, va_list* args) {
+char char_at(obj* self, va_list* args) {
 	int i = va_arg(*args, int);
 
 	if (i < 0) {

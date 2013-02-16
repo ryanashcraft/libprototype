@@ -18,7 +18,7 @@ void error_attempted_to_set_member_to_null(char* key);
 void error_object_does_not_respond_to_method(char* key);
 void error_attempted_to_get_undefined_member(char* key);
 
-obj* object() {
+obj* Object() {
 	obj* o = malloc(sizeof(struct _obj));
 	assert(o);
 

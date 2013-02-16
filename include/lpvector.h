@@ -4,6 +4,6 @@
 
 #include "libprototype.h"
 
-obj* vector();
+obj* Vector();
 
 #endif
