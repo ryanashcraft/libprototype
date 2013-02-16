@@ -8,6 +8,7 @@ method* new_method(fpointer function);
 method_o* new_method_o(fpointer_o function);
 method_p* new_method_p(fpointer_p function);
 method_d* new_method_d(fpointer_d function);
+method_ld* new_method_ld(fpointer_ld function);
 method_f* new_method_f(fpointer_f function);
 method_c* new_method_c(fpointer_c function);
 
@@ -77,6 +78,12 @@ void bind_d(obj* o, char* key, fpointer_d function) {
 	free(m);
 }
 
+void bind_ld(obj* o, char* key, fpointer_ld function) {
+	method_ld* m = new_method_ld(function);
+	ht_insert(&o->table, key, strlen(key), m, sizeof(method_ld));
+	free(m);
+}
+
 void bind_f(obj* o, char* key, fpointer_f function) {
 	method_f* m = new_method_f(function);
 	ht_insert(&o->table, key, strlen(key), m, sizeof(method_f));
@@ -140,7 +147,7 @@ void* call_p(obj* o, char* key, ...) {
 	return m->function(o, &argp);
 }
 
-long call_d(obj* o, char* key, ...) {
+int call_d(obj* o, char* key, ...) {
 	va_list argp;
 	va_start(argp, key);
 
@@ -149,6 +156,23 @@ long call_d(obj* o, char* key, ...) {
 	}
 
 	method_d* m = ht_get(o->table, key, strlen(key));
+
+	if (m == NULL || m->function == NULL) {
+		error_object_does_not_respond_to_method(key);
+	}
+
+	return m->function(o, &argp);
+}
+
+long call_ld(obj* o, char* key, ...) {
+	va_list argp;
+	va_start(argp, key);
+
+	if (o == NULL) {
+		error_called_method_on_null(key);
+	}
+
+	method_ld* m = ht_get(o->table, key, strlen(key));
 
 	if (m == NULL || m->function == NULL) {
 		error_object_does_not_respond_to_method(key);
@@ -257,7 +281,28 @@ char* get_s(obj* o, char* key) {
 	return valuep;
 }
 
-void set_d(obj* o, char* key, long value) {
+void set_d(obj* o, char* key, int value) {
+	if (o == NULL) {
+		error_attempted_to_set_member_of_null(key);
+	}
+
+	int* valuep = malloc(sizeof(int));
+	*valuep = value;
+	ht_insert(&o->table, key, strlen(key), valuep, sizeof(int));
+	free(valuep);
+}
+
+int get_d(obj* o, char* key) {
+	int* valuep = ht_get(o->table, key, strlen(key));
+
+	if (valuep == NULL) {
+		error_attempted_to_get_undefined_member(key);
+	}
+
+	return *valuep;
+}
+
+void set_ld(obj* o, char* key, long value) {
 	if (o == NULL) {
 		error_attempted_to_set_member_of_null(key);
 	}
@@ -268,7 +313,7 @@ void set_d(obj* o, char* key, long value) {
 	free(valuep);
 }
 
-long get_d(obj* o, char* key) {
+long get_ld(obj* o, char* key) {
 	long* valuep = ht_get(o->table, key, strlen(key));
 
 	if (valuep == NULL) {
@@ -349,6 +394,15 @@ method_p* new_method_p(fpointer_p function) {
 
 method_d* new_method_d(fpointer_d function) {
 	method_d* m = malloc(sizeof(struct _method_d));
+	assert(m);
+
+	m->function = function;
+
+	return m;
+}
+
+method_ld* new_method_ld(fpointer_ld function) {
+	method_ld* m = malloc(sizeof(struct _method_ld));
 	assert(m);
 
 	m->function = function;

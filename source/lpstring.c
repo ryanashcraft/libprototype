@@ -13,13 +13,13 @@ obj* string(char* value) {
 }
 
 char charat(obj* self, va_list* args) {
-	long i = va_arg(*args, long);
+	int i = va_arg(*args, int);
 
 	if (i < 0) {
-		LOG_CRITICAL("Attempt to access index %ld of string with length %ld", i, get_d(self, "length"));
+		LOG_CRITICAL("Attempt to access index %d of string with length %d", i, get_d(self, "length"));
 		abort();
 	} else if (i >= get_d(self, "length")) {
-		LOG_CRITICAL("Attempt to access index %ld of string with length %ld", i, get_d(self, "length"));
+		LOG_CRITICAL("Attempt to access index %d of string with length %d", i, get_d(self, "length"));
 		abort();
 	}
 

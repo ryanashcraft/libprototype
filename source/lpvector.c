@@ -24,20 +24,20 @@ obj* vector() {
 void append(obj* self, va_list* args) {
 	obj* o = va_arg(*args, obj*);
 	obj** vector_value = *((obj***)get_p(self, "value"));
-	long count = get_d(self, "count");
+	int count = get_d(self, "count");
 	vector_value[count] = o;
 
 	set_d(self, "count", count + 1);
 }
 
 void set_at(obj* self, va_list* args) {
-	long i = va_arg(*args, long);
+	int i = va_arg(*args, int);
 
 	if (i < 0) {
-		LOG_CRITICAL("Attempt to access index %ld of vector with count %ld", i, get_d(self, "count"));
+		LOG_CRITICAL("Attempt to access index %d of vector with count %d", i, get_d(self, "count"));
 		abort();
 	} else if (i >= get_d(self, "count")) {
-		LOG_CRITICAL("Attempt to access index %ld of vector with count %ld", i, get_d(self, "count"));
+		LOG_CRITICAL("Attempt to access index %d of vector with count %d", i, get_d(self, "count"));
 		abort();
 	}
 
@@ -49,13 +49,13 @@ void set_at(obj* self, va_list* args) {
 }
 
 obj* at(obj* self, va_list* args) {
-	long i = va_arg(*args, long);
+	int i = va_arg(*args, int);
 
 	if (i < 0) {
-		LOG_CRITICAL("Attempt to access index %ld of vector with count %ld", i, get_d(self, "count"));
+		LOG_CRITICAL("Attempt to access index %d of vector with count %d", i, get_d(self, "count"));
 		abort();
 	} else if (i >= get_d(self, "count")) {
-		LOG_CRITICAL("Attempt to access index %ld of vector with count %ld", i, get_d(self, "count"));
+		LOG_CRITICAL("Attempt to access index %d of vector with count %d", i, get_d(self, "count"));
 		abort();
 	}
 

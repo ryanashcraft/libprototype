@@ -16,13 +16,13 @@ void start() {
 	v = vector(10);
 	call(v, "append", o);
 
-	printf("%ld\n", get_d(v, "count"));
+	printf("%d\n", get_d(v, "count"));
 }
 
 void end() {
 	obj* o = call_o(v, "at", 0);
 	
-	printf("%s %ld %f %c\n", get_s(o, "s"), get_d(o, "d"), get_f(o, "f"), get_c(o, "c"));
+	printf("%s %d %f %c\n", get_s(o, "s"), get_d(o, "d"), get_f(o, "f"), get_c(o, "c"));
 
 	printf("%s\n", get_s(s, "value"));
 

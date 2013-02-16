@@ -20,7 +20,8 @@ struct _obj;
 typedef void (*fpointer) (struct _obj*, va_list*);
 typedef void* (*fpointer_p) (struct _obj*, va_list*);
 typedef struct _obj* (*fpointer_o) (struct _obj*, va_list*);
-typedef long (*fpointer_d) (struct _obj*, va_list*);
+typedef int (*fpointer_d) (struct _obj*, va_list*);
+typedef long (*fpointer_ld) (struct _obj*, va_list*);
 typedef double (*fpointer_f) (struct _obj*, va_list*);
 typedef char (*fpointer_c) (struct _obj*, va_list*);
 
@@ -45,6 +46,10 @@ typedef struct _method_d {
 	fpointer_d function;
 } method_d;
 
+typedef struct _method_ld {
+	fpointer_ld function;
+} method_ld;
+
 typedef struct _method_f {
 	fpointer_f function;
 } method_f;
@@ -68,8 +73,11 @@ void* get_p(obj* o, char* key);
 void set_s(obj* o, char* key, char* value);
 char* get_s(obj* o, char* key);
 
-void set_d(obj* o, char* key, long value);
-long get_d(obj* o, char* key);
+void set_d(obj* o, char* key, int value);
+int get_d(obj* o, char* key);
+
+void set_ld(obj* o, char* key, long value);
+long get_ld(obj* o, char* key);
 
 void set_f(obj* o, char* key, double value);
 double get_f(obj* o, char* key);
@@ -87,7 +95,10 @@ void bind_p(obj* o, char* key, fpointer_p function);
 void* call_p(obj* o, char* key, ...);
 
 void bind_d(obj* o, char* key, fpointer_d function);
-long call_d(obj* o, char* key, ...);
+int call_d(obj* o, char* key, ...);
+
+void bind_ld(obj* o, char* key, fpointer_ld function);
+long call_ld(obj* o, char* key, ...);
 
 void bind_f(obj* o, char* key, fpointer_f function);
 double call_f(obj* o, char* key, ...);
