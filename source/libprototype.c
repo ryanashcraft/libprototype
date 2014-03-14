@@ -4,14 +4,6 @@
 void start();
 void end();
 
-static method* new_method(fpointer function);
-static method_o* new_method_o(fpointer_o function);
-static method_p* new_method_p(fpointer_p function);
-static method_d* new_method_d(fpointer_d function);
-static method_ld* new_method_ld(fpointer_ld function);
-static method_f* new_method_f(fpointer_f function);
-static method_c* new_method_c(fpointer_c function);
-
 static void error_called_method_on_null(char* key);
 static void error_attempted_to_set_member_of_null(char* key);
 static void error_attempted_to_set_member_to_null(char* key);
@@ -63,45 +55,31 @@ obj* delete(obj* o) {
 }
 
 void bind(obj* o, char* key, fpointer function) {
-	method* m = new_method(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method));
-	free(m);
+	ht_insert(&o->table, key, strlen(key), &function, sizeof(fpointer));
 }
 
 void bind_o(obj* o, char* key, fpointer_o function) {
-	method_o* m = new_method_o(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method_o));
-	free(m);
+	ht_insert(&o->table, key, strlen(key), &function, sizeof(fpointer_o));
 }
 
 void bind_p(obj* o, char* key, fpointer_p function) {
-	method_p* m = new_method_p(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method_p));
-	free(m);
+	ht_insert(&o->table, key, strlen(key), &function, sizeof(fpointer_p));
 }
 
 void bind_d(obj* o, char* key, fpointer_d function) {
-	method_d* m = new_method_d(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method_d));
-	free(m);
+	ht_insert(&o->table, key, strlen(key), &function, sizeof(fpointer_d));
 }
 
 void bind_ld(obj* o, char* key, fpointer_ld function) {
-	method_ld* m = new_method_ld(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method_ld));
-	free(m);
+	ht_insert(&o->table, key, strlen(key), &function, sizeof(fpointer_ld));
 }
 
 void bind_f(obj* o, char* key, fpointer_f function) {
-	method_f* m = new_method_f(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method_f));
-	free(m);
+	ht_insert(&o->table, key, strlen(key), &function, sizeof(fpointer_f));
 }
 
 void bind_c(obj* o, char* key, fpointer_c function) {
-	method_c* m = new_method_c(function);
-	ht_insert(&o->table, key, strlen(key), m, sizeof(method_c));
-	free(m);
+	ht_insert(&o->table, key, strlen(key), &function, sizeof(fpointer_c));
 }
 
 void call(obj* o, char* key, ...) {
@@ -112,13 +90,13 @@ void call(obj* o, char* key, ...) {
 		error_called_method_on_null(key);
 	}
 
-	method* m = ht_get(o->table, key, strlen(key));
+	fpointer *m = (fpointer*)ht_get(o->table, key, strlen(key));
 
-	if (m == NULL || m->function == NULL) {
+	if (m == NULL) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	m->function(o, &argp);
+	(*m)(o, &argp);
 	va_end(argp);
 }
 
@@ -131,13 +109,13 @@ obj* call_o(obj* o, char* key, ...) {
 		error_called_method_on_null(key);
 	}
 
-	method_o* m = ht_get(o->table, key, strlen(key));
+	fpointer_o *m = (fpointer_o*)ht_get(o->table, key, strlen(key));
 
-	if (m == NULL || m->function == NULL) {
+	if (m == NULL) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	result = m->function(o, &argp);
+	result = (*m)(o, &argp);
 	va_end(argp);
 	return result;
 }
@@ -151,13 +129,13 @@ void* call_p(obj* o, char* key, ...) {
 		error_called_method_on_null(key);
 	}
 
-	method_p* m = ht_get(o->table, key, strlen(key));
+	fpointer_p *m = (fpointer_p*)ht_get(o->table, key, strlen(key));
 
-	if (m == NULL || m->function == NULL) {
+	if (m == NULL) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	result = m->function(o, &argp);
+	result = (*m)(o, &argp);
 	va_end(argp);
 	return result;
 }
@@ -171,13 +149,13 @@ int call_d(obj* o, char* key, ...) {
 		error_called_method_on_null(key);
 	}
 
-	method_d* m = ht_get(o->table, key, strlen(key));
+	fpointer_d *m = (fpointer_d*)ht_get(o->table, key, strlen(key));
 
-	if (m == NULL || m->function == NULL) {
+	if (m == NULL) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	result = m->function(o, &argp);
+	result = (*m)(o, &argp);
 	va_end(argp);
 	return result;
 }
@@ -191,13 +169,13 @@ long call_ld(obj* o, char* key, ...) {
 		error_called_method_on_null(key);
 	}
 
-	method_ld* m = ht_get(o->table, key, strlen(key));
+	fpointer_ld *m = (fpointer_ld*)ht_get(o->table, key, strlen(key));
 
-	if (m == NULL || m->function == NULL) {
+	if (m == NULL) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	result = m->function(o, &argp);
+	result = (*m)(o, &argp);
 	va_end(argp);
 	return result;
 }
@@ -211,13 +189,13 @@ double call_f(obj* o, char* key, ...) {
 		error_called_method_on_null(key);
 	}
 
-	method_f* m = ht_get(o->table, key, strlen(key));
+	fpointer_f *m = (fpointer_f*)ht_get(o->table, key, strlen(key));
 	
-	if (m == NULL || m->function == NULL) {
+	if (m == NULL) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	result = m->function(o, &argp);
+	result = (*m)(o, &argp);
 	va_end(argp);
 	return result;
 }
@@ -231,13 +209,13 @@ char call_c(obj* o, char* key, ...) {
 		error_called_method_on_null(key);
 	}
 
-	method_c* m = ht_get(o->table, key, strlen(key));
+	fpointer_c *m = (fpointer_c*)ht_get(o->table, key, strlen(key));
 	
-	if (m == NULL || m->function == NULL) {
+	if (m == NULL) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	result = m->function(o, &argp);
+	result = (*m)(o, &argp);
 	va_end(argp);
 	return result;
 }
@@ -393,72 +371,9 @@ char get_c(obj* o, char* key) {
 }
 
 void unset(obj* o, char* key) {
-	void* removed = ht_remove(o->table, key, strlen(key));
-	free(removed);
+	ht_remove(o->table, key, strlen(key));
 }
 
-method* new_method(fpointer function) {
-	method* m = malloc(sizeof(struct _method));
-	assert(m);
-
-	m->function = function;
-
-	return m;
-}
-
-method_o* new_method_o(fpointer_o function) {
-	method_o* m = malloc(sizeof(struct _method_o));
-	assert(m);
-
-	m->function = function;
-
-	return m;
-}
-
-method_p* new_method_p(fpointer_p function) {
-	method_p* m = malloc(sizeof(struct _method_p));
-	assert(m);
-
-	m->function = function;
-
-	return m;
-}
-
-method_d* new_method_d(fpointer_d function) {
-	method_d* m = malloc(sizeof(struct _method_d));
-	assert(m);
-
-	m->function = function;
-
-	return m;
-}
-
-method_ld* new_method_ld(fpointer_ld function) {
-	method_ld* m = malloc(sizeof(struct _method_ld));
-	assert(m);
-
-	m->function = function;
-
-	return m;
-}
-
-method_f* new_method_f(fpointer_f function) {
-	method_f* m = malloc(sizeof(struct _method_f));
-	assert(m);
-
-	m->function = function;
-
-	return m;
-}
-
-method_c* new_method_c(fpointer_c function) {
-	method_c* m = malloc(sizeof(struct _method_c));
-	assert(m);
-
-	m->function = function;
-
-	return m;
-}
 
 void error_called_method_on_null(char* key) {
 	LOG_CRITICAL("Attempted to call \"%s\" on NULL", key);
