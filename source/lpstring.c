@@ -22,8 +22,11 @@ obj* FormattedString(char* format, ...) {
 	va_start(args, format);
 
 	int size_needed = vsnprintf(NULL, 0, format, args);
+	va_end(args);
+	va_start(args, format);
 	char* value = calloc(size_needed + 1, sizeof(char));
 	vsnprintf(value, size_needed, format, args);
+	va_end(args);
 
 	obj* self = Object();
 	set_s(self, "value", value);

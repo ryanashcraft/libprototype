@@ -679,4 +679,5 @@ void ll_traverse_with_args(list* llist, list_op_args do_func, ...) {
 
       va_start(args, do_func);
   } while (n != llist->head);
+  va_end(args);
 }

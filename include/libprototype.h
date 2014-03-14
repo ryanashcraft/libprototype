@@ -32,34 +32,6 @@ typedef struct _obj {
 	fpointer dealloc;
 } obj;
 
-typedef struct _method {
-	fpointer function;
-} method;
-
-typedef struct _method_o {
-	fpointer_o function;
-} method_o;
-
-typedef struct _method_p {
-	fpointer_p function;
-} method_p;
-
-typedef struct _method_d {
-	fpointer_d function;
-} method_d;
-
-typedef struct _method_ld {
-	fpointer_ld function;
-} method_ld;
-
-typedef struct _method_f {
-	fpointer_f function;
-} method_f;
-
-typedef struct _method_c {
-	fpointer_c function;
-} method_c;
-
 obj* Object();
 obj* clone(obj* subject);
 void retain(obj*);

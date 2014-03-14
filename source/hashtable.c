@@ -11,6 +11,7 @@ typedef struct _htable_entry {
 	size_t key_size;
 	void *value;
 	size_t value_size;
+	char data[1];
 } htable_entry;
 
 static int ht_hash(void *key, size_t key_size, size_t max_size);
@@ -35,8 +36,6 @@ void ht_destroy(hashtable *table) {
 	for (int i = 0; i < table->max_size; i++) {
 		struct _htable_entry *entry = table->entries[i];
 		if (entry != NULL) {
-			free(entry->key);
-			free(entry->value);
 			free(entry);
 		}
 	}
@@ -53,19 +52,18 @@ void ht_insert(hashtable **table, void *key, size_t key_size, void *value, size_
 
 	// Free old entry if we are replacing
 	if ((*table)->entries[hash] != NULL && memcmp((*table)->entries[hash]->key, key, key_size) == 0) {
-		free((*table)->entries[hash]->key);
-		free((*table)->entries[hash]->value);
 		free((*table)->entries[hash]);
 	}
 
-	htable_entry *entry = (htable_entry *)malloc(sizeof(struct _htable_entry));
+	size_t entry_size = sizeof(struct _htable_entry) + key_size + value_size;
+	htable_entry *entry = (htable_entry *)malloc(entry_size);
 	
-	entry->key = malloc(key_size);
-	memcpy(entry->key, key, key_size);
+	memcpy(entry->data, key, key_size);
+	entry->key = entry->data;
 	entry->key_size = key_size;
 
-	entry->value = malloc(value_size);
-	memcpy(entry->value, value, value_size);
+	memcpy(entry->data+key_size, value, value_size);
+	entry->value = entry->data+key_size;
 	entry->value_size = value_size;
 	
 	(*table)->entries[hash] = entry;
@@ -73,19 +71,14 @@ void ht_insert(hashtable **table, void *key, size_t key_size, void *value, size_
 	(*table)->entry_count++;
 }
 
-void *ht_remove(hashtable *table, void *key, size_t key_size) {
+void ht_remove(hashtable *table, void *key, size_t key_size) {
 	int hash = ht_hash(key, key_size, table->max_size);
 
 	int index = ht_correct_index_if_needed(table, hash, key, key_size);
 	assert(index >= 0 && index < table->max_size);
 
-	void *value = table->entries[index]->value;
-
-	free(table->entries[index]->key);
 	free(table->entries[index]);
 	table->entries[index] = NULL;
-
-	return value;
 }
 
 void *ht_get(hashtable *table, void *key, size_t key_size) {
