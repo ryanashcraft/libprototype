@@ -119,10 +119,12 @@ void call(obj* o, char* key, ...) {
 	}
 
 	m->function(o, &argp);
+	va_end(argp);
 }
 
 obj* call_o(obj* o, char* key, ...) {
 	va_list argp;
+	obj* result;
 	va_start(argp, key);
 
 	if (o == NULL) {
@@ -135,11 +137,14 @@ obj* call_o(obj* o, char* key, ...) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	return m->function(o, &argp);
+	result = m->function(o, &argp);
+	va_end(argp);
+	return result;
 }
 
 void* call_p(obj* o, char* key, ...) {
 	va_list argp;
+	void* result;
 	va_start(argp, key);
 
 	if (o == NULL) {
@@ -152,11 +157,14 @@ void* call_p(obj* o, char* key, ...) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	return m->function(o, &argp);
+	result = m->function(o, &argp);
+	va_end(argp);
+	return result;
 }
 
 int call_d(obj* o, char* key, ...) {
 	va_list argp;
+	int result;
 	va_start(argp, key);
 
 	if (o == NULL) {
@@ -169,11 +177,14 @@ int call_d(obj* o, char* key, ...) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	return m->function(o, &argp);
+	result = m->function(o, &argp);
+	va_end(argp);
+	return result;
 }
 
 long call_ld(obj* o, char* key, ...) {
 	va_list argp;
+	long result;
 	va_start(argp, key);
 
 	if (o == NULL) {
@@ -186,11 +197,14 @@ long call_ld(obj* o, char* key, ...) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	return m->function(o, &argp);
+	result = m->function(o, &argp);
+	va_end(argp);
+	return result;
 }
 
 double call_f(obj* o, char* key, ...) {
 	va_list argp;
+	double result;
 	va_start(argp, key);
 
 	if (o == NULL) {
@@ -203,11 +217,14 @@ double call_f(obj* o, char* key, ...) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	return m->function(o, &argp);
+	result = m->function(o, &argp);
+	va_end(argp);
+	return result;
 }
 
 char call_c(obj* o, char* key, ...) {
 	va_list argp;
+	char result;
 	va_start(argp, key);
 
 	if (o == NULL) {
@@ -220,7 +237,9 @@ char call_c(obj* o, char* key, ...) {
 		error_object_does_not_respond_to_method(key);
 	}
 
-	return m->function(o, &argp);
+	result = m->function(o, &argp);
+	va_end(argp);
+	return result;
 }
 
 void set_o(obj* o, char* key, obj* value) {
